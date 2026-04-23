@@ -1,0 +1,49 @@
+{
+  "$schema": "../schema.json",
+  "name": "corporate",
+  "version": 1,
+  "default": false,
+  "source": { "type": "built-in" },
+  "confidence": "high",
+  "palette": {
+    "primary":   { "fillColor": "#E3F2FD", "strokeColor": "#1565C0" },
+    "success":   { "fillColor": "#E8F5E9", "strokeColor": "#2E7D32" },
+    "warning":   { "fillColor": "#FFF8E1", "strokeColor": "#F57C00" },
+    "accent":    { "fillColor": "#FFF3E0", "strokeColor": "#E65100" },
+    "danger":    { "fillColor": "#FFEBEE", "strokeColor": "#C62828" },
+    "neutral":   { "fillColor": "#ECEFF1", "strokeColor": "#455A64" },
+    "secondary": { "fillColor": "#F3E5F5", "strokeColor": "#6A1B9A" }
+  },
+  "roles": {
+    "service":  "primary",
+    "database": "success",
+    "queue":    "warning",
+    "gateway":  "accent",
+    "error":    "danger",
+    "external": "neutral",
+    "security": "secondary"
+  },
+  "shapes": {
+    "service":   "rounded=0",
+    "database":  "shape=cylinder3",
+    "queue":     "rounded=0",
+    "decision":  "rhombus",
+    "external":  "rounded=0;dashed=1",
+    "container": "swimlane;startSize=30"
+  },
+  "font": {
+    "fontFamily": "Arial",
+    "fontSize": 11,
+    "titleFontSize": 13,
+    "titleBold": true
+  },
+  "edges": {
+    "style": "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1",
+    "arrow": "endArrow=classic;endFill=1",
+    "dashedFor": ["optional", "async"]
+  },
+  "extras": {
+    "sketch": false,
+    "globalStrokeWidth": 1
+  }
+}
