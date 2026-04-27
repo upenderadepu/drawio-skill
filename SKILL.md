@@ -87,13 +87,13 @@ When a preset loads successfully, mention it in the first line of the reply: *"U
 4. **Export draft** — run CLI to produce a preview PNG. **Do NOT pass `-e`** at this step — the embedded `zTXt mxGraphModel` chunk it adds causes vision APIs (Claude included) to return 400 "Could not process image" in step 5. Save the clean preview as `<name>.png` (single extension). Embedding is for the final export only (step 7).
 5. **Self-check** — use the agent's built-in vision capability to read the exported PNG, catch obvious issues, auto-fix before showing user (requires a vision-enabled model such as Claude Sonnet/Opus). If reading the PNG returns a 400 / "Could not process image" error, you almost certainly exported with `-e` by mistake — re-export without `-e` and retry once. If it still fails, skip self-check and continue to step 6.
 6. **Review loop** — show image to user, collect feedback, apply targeted XML edits, re-export, repeat until approved
-7. **Final export** — re-export the approved version to all requested formats. Use `-e` here (PNG/SVG/PDF) so the deliverable stays editable in draw.io; save as `<name>.drawio.png` to signal embedded XML. **For PNG with `-e`, run the IEND repair snippet immediately after** — draw.io's CLI truncates the IEND chunk in `-e` PNG output (8 bytes missing), producing a corrupt file that vision APIs and strict PNG decoders reject (issue #9). See **Export → Post-export PNG repair**. Report file paths.
+7. **Final export** — re-export the approved version to all requested formats. Use `-e` here (PNG/SVG/PDF) so the deliverable stays editable in draw.io; save as `<name>.drawio.png` to signal embedded XML. **For PNG with `-e`, run the IEND repair snippet immediately after** — draw.io's CLI truncates the IEND chunk in `-e` PNG output (8 bytes missing), producing a corrupt file that vision APIs and strict PNG decoders reject (issue #8). See **Export → Post-export PNG repair**. Report file paths.
 
 ### Step 5: Self-Check
 
 After exporting the draft PNG, use the agent's vision capability (e.g., Claude's image input) to read the image and check for these issues before showing the user. If the agent does not support vision, skip self-check and show the PNG directly.
 
-**Important:** the draft PNG read here must have been exported **without** `-e`. Draw.io's `-e` flag injects a `zTXt mxGraphModel` chunk into the PNG that the Anthropic vision API rejects with 400 "Could not process image" (issue #8). If you see that error, re-export without `-e` and retry once; if it still fails (any other reason), skip self-check and proceed to step 6.
+**Important:** the draft PNG read here must have been exported **without** `-e`. Draw.io's `-e` flag emits a PNG with a truncated IEND chunk (8 bytes of type+CRC missing) that the Anthropic vision API rejects with 400 "Could not process image" (issue #8). The simplest fix for the preview step is to skip `-e` entirely; the final export in step 7 keeps `-e` and runs the repair snippet. If you see the 400 error here, re-export without `-e` and retry once; if it still fails (any other reason), skip self-check and proceed to step 6.
 
 | Check | What to look for | Auto-fix action |
 |-------|-----------------|-----------------|
@@ -484,7 +484,7 @@ The `endswith(IEND)` guard makes this a no-op if draw.io fixes the bug upstream 
 **Key flags:**
 - `-x` — export mode (required)
 - `-f` — format: `png`, `svg`, `pdf`, `jpg`
-- `-e` — embed diagram XML in output (PNG, SVG, PDF) — exported file remains editable in draw.io. **Skip for the preview PNG used in step 5 self-check** — vision APIs reject PNGs with the embedded `zTXt mxGraphModel` chunk (issue #8).
+- `-e` — embed diagram XML in output (PNG, SVG, PDF) — exported file remains editable in draw.io. **Skip for the preview PNG used in step 5 self-check** — `-e` PNGs have a truncated IEND chunk that vision APIs reject (issue #8). For final PNG export, keep `-e` and run the IEND repair snippet (see Post-export PNG repair). SVG/PDF unaffected.
 - `-s` — scale: `1`, `2`, `3` (2 recommended for PNG)
 - `-o` — output file path; accepts any directory (e.g. `./artifacts/diagram.drawio.png`) — `mkdir -p` the target dir first. Use `.drawio.png` double extension when embedding.
 - `-b` — border width around diagram (default: 0, recommend 10)
@@ -553,7 +553,7 @@ fi
 | `--` inside XML comments | Illegal per XML spec — use single hyphens or rephrase |
 | Arrowhead overlaps bend | Final edge segment before target must be ≥20px — increase spacing or add waypoints |
 | Literal `\n` in label text | Use `&#xa;` for line breaks in `value` attributes |
-| Vision returns 400 "Could not process image" on draft PNG | Re-export the preview without `-e` (issue #8). Root cause is actually a truncated IEND chunk in `-e` PNGs (issue #9), not the `zTXt` chunk itself — but the simplest fix for the preview is just to skip `-e`. |
+| Vision returns 400 "Could not process image" on draft PNG | Re-export the preview without `-e` (issue #8). Root cause is actually a truncated IEND chunk in `-e` PNGs (issue #8), not the `zTXt` chunk itself — but the simplest fix for the preview is just to skip `-e`. |
 | Final `-e` PNG won't open in image viewers / vision APIs | Run the IEND repair snippet (Export → Post-export PNG repair). draw.io CLI emits `-e` PNGs with an 8-byte truncation at IEND. SVG/PDF unaffected. |
 
 ## Diagram Type Presets
