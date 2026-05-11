@@ -3,7 +3,7 @@
 [English](README.md) | [Online Docs](https://agents365-ai.github.io/drawio-skill/)
 
 <p align="center">
-  <img src="assets/workflow-cn.png" width="420" alt="工作流程">
+  <img src="assets/workflow-cn.png" width="900" alt="工作流程">
 </p>
 
 ## 功能说明
