@@ -23,11 +23,11 @@ A skill that turns natural-language descriptions into `.drawio` XML and exports 
 ## ✨ Highlights
 
 - **6 diagram type presets** — ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart
-- **Self-check + auto-fix** — reads its own PNG output and auto-fixes 6 issue types (up to 2 rounds)
-- **Iterative feedback loop** — 5-round targeted refinement until you're satisfied
+- **Self-check + auto-fix** — reads its own PNG output and auto-fixes overlaps, clipped labels, stacked edges, and more (up to 2 rounds)
+- **Iterative feedback loop** — up to 5 rounds of targeted refinement
 - **Style presets** — capture your visual style from a `.drawio` file or image, reuse on demand
-- **Grid-aligned layout** — complexity-scaled spacing, routing corridors, hub-center strategy
-- **Multi-agent, zero-config** — pure SKILL.md; no MCP server, no Python, no Node.js
+- **Clean layout** — grid-aligned, spacing scales with diagram size, connectors routed clear of nodes
+- **Multi-agent, zero-config** — runs from a single SKILL.md; no MCP server, no background daemon (the optional `npx` installer needs Node, the skill itself does not)
 
 ## 🖼️ Examples
 
@@ -36,18 +36,19 @@ A skill that turns natural-language descriptions into `.drawio` XML and exports 
 
 ```
 Create a microservices e-commerce architecture with Mobile/Web/Admin clients,
-API Gateway, Auth/User/Order/Product/Payment services, Kafka message queue,
-Notification service, and User DB / Order DB / Product DB / Redis Cache / Stripe API
+API Gateway (auth + rate limiting + routing), Auth/User/Order/Product/Payment
+services, Kafka message queue, Notification service, and User DB / Order DB /
+Product DB / Redis Cache / Stripe API
 ```
 
-The skill also routes edges cleanly across different topologies — no lines crossing through shapes:
+The skill is designed to route edges cleanly across different topologies, avoiding lines that cross through shapes:
 
 <table>
   <tr>
     <td align="center" width="33%">
       <img src="assets/demo-star.png" alt="Star topology" width="100%"><br>
       <b>Star</b> · 7 nodes<br>
-      <sub>Central message broker with 6 microservices radiating outward, zero edge crossings.</sub>
+      <sub>Central message broker with 6 microservices radiating outward, no edge crossings on this example.</sub>
     </td>
     <td align="center" width="33%">
       <img src="assets/demo-layered.png" alt="Layered flow" width="100%"><br>
@@ -160,7 +161,7 @@ Behind the scenes: **check dependencies → plan layout → generate `.drawio` X
 
 ### vs Other draw.io Skills & Tools
 
-| Feature | drawio-skill | [jgraph/drawio-mcp](https://github.com/jgraph/drawio-mcp) (official)<br>![](https://img.shields.io/github/stars/jgraph/drawio-mcp?style=flat-square&logo=github) | [bahayonghang/drawio-skills](https://github.com/bahayonghang/drawio-skills)<br>![](https://img.shields.io/github/stars/bahayonghang/drawio-skills?style=flat-square&logo=github) | [GBSOSS/ai-drawio](https://github.com/GBSOSS/ai-drawio)<br>![](https://img.shields.io/github/stars/GBSOSS/ai-drawio?style=flat-square&logo=github) |
+| Feature | drawio-skill | [jgraph/drawio-mcp](https://github.com/jgraph/drawio-mcp) (official)<br>![stars](https://img.shields.io/github/stars/jgraph/drawio-mcp?style=flat-square&logo=github) | [bahayonghang/drawio-skills](https://github.com/bahayonghang/drawio-skills)<br>![stars](https://img.shields.io/github/stars/bahayonghang/drawio-skills?style=flat-square&logo=github) | [GBSOSS/ai-drawio](https://github.com/GBSOSS/ai-drawio)<br>![stars](https://img.shields.io/github/stars/GBSOSS/ai-drawio?style=flat-square&logo=github) |
 |---|---|---|---|---|
 | **Approach** | Pure SKILL.md | SKILL.md / MCP / Project | YAML DSL + CLI (MCP optional) | Claude Code plugin |
 | **Dependencies** | draw.io desktop only | draw.io desktop | draw.io desktop (MCP optional) | draw.io plugin + browser |
@@ -173,7 +174,7 @@ Behind the scenes: **check dependencies → plan layout → generate `.drawio` X
 | **Browser fallback** | ✅ diagrams.net URL | ❌ inline preview only | ✅ via optional MCP | ✅ diagrams.net viewer (primary) |
 | **Zero-config** | ✅ copy `skills/drawio-skill/` | ✅ | ✅ desktop-only mode | ❌ needs plugin install |
 
-Full comparison + key-advantages summary in [docs/COMPARISON.md](docs/COMPARISON.md). _Last audited against competitor READMEs on 2026-05-17 — please open an issue or PR if anything is out of date._
+Full comparison + key-advantages summary in [docs/COMPARISON.md](docs/COMPARISON.md) (with audit timestamp).
 
 ## 🔗 Related Skills
 
