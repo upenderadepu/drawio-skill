@@ -212,6 +212,21 @@ python3 scripts/heatmap.py    architecture.drawio -m latency.csv --size -o hot.d
 
 # any extractor → auto-layout → editable .drawio
 python3 scripts/autolayout.py  graph.json -o diagram.drawio
+
+# Image → editable .drawio — your vision extracts the graph JSON, this rebuilds it
+python3 scripts/raster2drawio.py whiteboard-graph.json -o out.drawio
+
+# Watch a diagram build itself, node by node → HTML player (+ optional GIF)
+python3 scripts/buildup.py architecture.drawio --gif build.gif  # → buildup.html
+
+# Big diagram → boardroom exec summary (clustered) + click-to-drill-down to full
+python3 scripts/compress.py  big.drawio -o exec.drawio
+
+# Decision-tree flowchart → click-through HTML triage runbook (no draw.io CLI needed)
+python3 scripts/runbook.py   triage.drawio -o triage.html
+
+# CI: render base/head/diff PNGs + Markdown report for every .drawio a PR changed
+python3 scripts/prdiff.py --base origin/main --head HEAD -o drawio-pr/report.md
 ```
 
 | Piece | What it does |

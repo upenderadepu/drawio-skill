@@ -4,6 +4,43 @@ All notable changes to **drawio-skill** are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/), and the project follows
 semantic-ish versioning (the `version:` field in `skills/drawio-skill/SKILL.md`).
 
+## [1.33.0] — 2026-07-14
+### Added
+- **`scripts/raster2drawio.py`** — image → editable `.drawio`. Converts a
+  vision-extracted image graph (JSON: nodes with `x`/`y`/`shape`/`fill`, edges with
+  `dashed`/`arrow`) — read off a whiteboard photo, legacy PNG, or Visio screenshot —
+  into an editable `.drawio` honouring those coordinates; nodes missing positions fall
+  back to shelling out to `autolayout.py`. Stdlib-only. Vision-extraction workflow in
+  `references/derasterize.md`.
+- **`scripts/buildup.py`** — turns ONE static `.drawio` into a self-contained HTML
+  "build-up" player: reveals nodes/edges in topological (dependency) order, one PNG
+  frame per step via the draw.io CLI, assembled into a base64-embedded
+  play/pause/step/scrub viewer. `--gif` optionally exports an animated GIF (Pillow;
+  skipped with a warning if absent — HTML still written). Distinct from `timelapse.py`
+  (git-history animation); this animates a single diagram assembling itself.
+- **`scripts/compress.py`** — big `.drawio` → boardroom executive summary. Clusters via
+  deterministic pure-Python label propagation (no networkx dep), names each cluster by
+  common label prefix / highest-degree member, aggregates cross-cluster edges, and emits
+  a 2-page `.drawio` (exec view autolaid-out via `autolayout.py`, page 2 = the original
+  diagram verbatim with `UserObject` drill-down links). Requires Graphviz `dot`.
+- **`scripts/runbook.py`** — flowchart/decision-tree `.drawio` → self-contained
+  click-through HTML runbook (current-step text, per-edge choice buttons, breadcrumb
+  trail, Back/Restart, end-state on terminal nodes). Infers start/decision/io/process
+  from shape style; start = the in-degree-0 start node. Pure XML parsing — no deps, no
+  draw.io CLI needed.
+- **`scripts/prdiff.py`** + **`.github/actions/drawio-diff/`** — PR diagram diff bot:
+  for every `.drawio` changed between two git refs, exports base/head PNGs and a
+  `drawiodiff.py`→`autolayout.py` colour-coded diff PNG via the draw.io CLI, and emits a
+  pure, unit-testable Markdown report. Ships a composite GitHub Action plus an opt-in
+  example workflow (`.github/workflows/drawio-pr-diff.example.yml`,
+  `workflow_dispatch`-gated so it never auto-runs in this repo) that posts/updates a
+  sticky PR comment. Needs git (fatal if missing); missing draw.io CLI degrades to a
+  file-list-only report instead of failing. See `references/pr-bot.md`.
+- Routing entries in SKILL.md's Bundled-resources table (5 rows), toolbox quick-guide
+  (5 rows) + §1/§5/§6 bullets, README/README_CN example block, and 5 new per-feature
+  test files. Scripts: 31 → 36; tests: 81 → 116 (`test_derasterize` 5, `test_buildup` 7,
+  `test_prdiff` 8, `test_compress` 9, `test_runbook` 6).
+
 ## [1.32.0] — 2026-07-14
 ### Added
 - **`scripts/ciimports.py`** — CI pipelines as diagrams. Reads GitHub Actions
