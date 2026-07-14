@@ -210,6 +210,21 @@ python3 scripts/heatmap.py    architecture.drawio -m latency.csv --size -o hot.d
 
 # 任一提取器 → 自动布局 → 可编辑的 .drawio
 python3 scripts/autolayout.py  graph.json -o diagram.drawio
+
+# 图片 → 可编辑 .drawio —— 由你的视觉提取出图结构 JSON，本脚本据此重建
+python3 scripts/raster2drawio.py whiteboard-graph.json -o out.drawio
+
+# 看一张图按节点依赖顺序逐步"画出来" → HTML 播放器（可选 GIF）
+python3 scripts/buildup.py architecture.drawio --gif build.gif  # → buildup.html
+
+# 大图 → 高管摘要（聚类）+ 点击下钻回到完整图
+python3 scripts/compress.py  big.drawio -o exec.drawio
+
+# 决策树流程图 → 点击式 HTML 排查手册（无需 draw.io CLI）
+python3 scripts/runbook.py   triage.drawio -o triage.html
+
+# CI：为 PR 改动的每个 .drawio 渲染 base/head/diff PNG + Markdown 报告
+python3 scripts/prdiff.py --base origin/main --head HEAD -o drawio-pr/report.md
 ```
 
 | 组件 | 作用 |
